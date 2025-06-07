@@ -1,15 +1,16 @@
+
 import { useState } from "react";
 import { useCricket } from "../context/CricketContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const AdminDashboard = () => {
   const { state, dispatch } = useCricket();
   const { match } = state;
   const [extraRuns, setExtraRuns] = useState(1);
   const [selectedWicketType, setSelectedWicketType] = useState('');
-  const [wicketTaker, setWicketTaker] = useState('');
-  const [newBowler, setNewBowler] = useState('');
+  const [selectedFielder, setSelectedFielder] = useState('');
   
   const battingTeam = match[match.battingTeam];
   const bowlingTeam = match[match.bowlingTeam];
@@ -24,9 +25,9 @@ const AdminDashboard = () => {
   
   const handleWicket = () => {
     if (selectedWicketType) {
-      dispatch({ type: 'WICKET', wicketType: selectedWicketType, fielder: wicketTaker });
+      dispatch({ type: 'WICKET', wicketType: selectedWicketType, fielder: selectedFielder });
       setSelectedWicketType('');
-      setWicketTaker('');
+      setSelectedFielder('');
     }
   };
 
@@ -38,11 +39,8 @@ const AdminDashboard = () => {
     dispatch({ type: 'END_INNINGS' });
   };
 
-  const handleUpdateBowler = () => {
-    if (newBowler.trim()) {
-      dispatch({ type: 'UPDATE_BOWLER', bowler: newBowler });
-      setNewBowler('');
-    }
+  const handleUpdateBowler = (bowlerName: string) => {
+    dispatch({ type: 'UPDATE_BOWLER', bowler: bowlerName });
   };
 
   const getPlayerIcon = (player: any) => {
@@ -59,6 +57,10 @@ const AdminDashboard = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  // Get wicket types that require fielder selection
+  const wicketTypesRequiringFielder = ['Catch-out', 'Run-out', 'Stump-out'];
+  const requiresFielder = wicketTypesRequiringFielder.includes(selectedWicketType);
 
   return (
     <div className="w-full bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
@@ -142,21 +144,28 @@ const AdminDashboard = () => {
                     <div className="font-semibold text-slate-800">{match.tossWinner}</div>
                   </div>
 
-                  {/* Bowler Update */}
+                  {/* Bowler Selection */}
                   <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                     <span className="text-sm font-medium text-yellow-800">Current Bowler</span>
-                    <div className="font-bold text-yellow-900 mb-2">{match.currentBowler || 'Not set'}</div>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="New bowler name"
-                        value={newBowler}
-                        onChange={(e) => setNewBowler(e.target.value)}
-                        className="border-yellow-300 focus:border-yellow-500"
-                      />
-                      <Button onClick={handleUpdateBowler} className="bg-yellow-600 hover:bg-yellow-700 text-white">
-                        Update
-                      </Button>
-                    </div>
+                    <div className="font-bold text-yellow-900 mb-2">{match.currentBowler || 'Not selected'}</div>
+                    <Select onValueChange={handleUpdateBowler}>
+                      <SelectTrigger className="border-yellow-300 focus:border-yellow-500">
+                        <SelectValue placeholder="Select bowler" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border shadow-lg z-50">
+                        {bowlingTeam.players.map((player) => (
+                          <SelectItem key={player.id} value={player.name}>
+                            <div className="flex items-center gap-2">
+                              <span>{getPlayerIcon(player)}</span>
+                              <span>{player.name}</span>
+                              <span className={`text-xs px-2 py-1 rounded-full ${getPlayerTypeColor(player.type)}`}>
+                                {player.type[0].toUpperCase()}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -210,6 +219,20 @@ const AdminDashboard = () => {
                     >
                       No Ball
                     </Button>
+                    <Button 
+                      onClick={() => handleExtra('bye')} 
+                      disabled={!match.isMatchActive}
+                      className="bg-gray-600 hover:bg-gray-700 text-white h-12"
+                    >
+                      Bye
+                    </Button>
+                    <Button 
+                      onClick={() => handleExtra('legBye')} 
+                      disabled={!match.isMatchActive}
+                      className="bg-gray-600 hover:bg-gray-700 text-white h-12"
+                    >
+                      Leg Bye
+                    </Button>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">Extra Runs:</span>
@@ -243,15 +266,34 @@ const AdminDashboard = () => {
                         </Button>
                       ))}
                     </div>
-                    <Input
-                      placeholder="Fielder/Bowler name"
-                      value={wicketTaker}
-                      onChange={(e) => setWicketTaker(e.target.value)}
-                      className="border-red-300 focus:border-red-500"
-                    />
+                    
+                    {/* Fielder Selection - only show when required */}
+                    {requiresFielder && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                          Select Fielder:
+                        </label>
+                        <Select onValueChange={setSelectedFielder} value={selectedFielder}>
+                          <SelectTrigger className="border-red-300 focus:border-red-500">
+                            <SelectValue placeholder="Select fielder" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border shadow-lg z-50">
+                            {bowlingTeam.players.map((player) => (
+                              <SelectItem key={player.id} value={player.name}>
+                                <div className="flex items-center gap-2">
+                                  <span>{getPlayerIcon(player)}</span>
+                                  <span>{player.name}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    
                     <Button 
                       onClick={handleWicket} 
-                      disabled={!selectedWicketType || !match.isMatchActive}
+                      disabled={!selectedWicketType || !match.isMatchActive || (requiresFielder && !selectedFielder)}
                       className="w-full bg-red-600 hover:bg-red-700 text-white h-12"
                     >
                       Record Wicket
@@ -293,9 +335,9 @@ const AdminDashboard = () => {
                 <div className="space-y-4">
                   {/* Batting Team */}
                   <div className="bg-white rounded-lg p-4 border border-blue-200">
-                    <h4 className="text-center mb-3 font-bold text-blue-900">{match.team1.name}</h4>
+                    <h4 className="text-center mb-3 font-bold text-blue-900">{battingTeam.name}</h4>
                     <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {match.team1.players.slice(0, 8).map((player, index) => (
+                      {battingTeam.players.slice(0, 8).map((player, index) => (
                         <div key={player.id} className="flex items-center gap-2 text-sm">
                           <span className="w-6 text-center font-medium text-blue-600">{index + 1}</span>
                           <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
@@ -305,7 +347,7 @@ const AdminDashboard = () => {
                           </div>
                           <span className="text-sm">{getPlayerIcon(player)}</span>
                           <span className="flex-1 font-medium truncate">{player.name}</span>
-                          <span className="text-xs px-2 py-1 rounded-full font-medium {getPlayerTypeColor(player.type)}">
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${getPlayerTypeColor(player.type)}`}>
                             {player.type[0].toUpperCase()}
                           </span>
                           <span className="text-sm text-right">{player.runs}({player.balls})</span>
@@ -316,9 +358,9 @@ const AdminDashboard = () => {
 
                   {/* Bowling Team */}
                   <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                    <h4 className="text-center mb-3 font-bold text-yellow-900">{match.team2.name}</h4>
+                    <h4 className="text-center mb-3 font-bold text-yellow-900">{bowlingTeam.name}</h4>
                     <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {match.team2.players.slice(0, 8).map((player, index) => (
+                      {bowlingTeam.players.slice(0, 8).map((player, index) => (
                         <div key={player.id} className="flex items-center gap-2 text-sm">
                           <span className="w-6 text-center font-medium text-yellow-600">{index + 1}</span>
                           <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
@@ -328,7 +370,7 @@ const AdminDashboard = () => {
                           </div>
                           <span className="text-sm">{getPlayerIcon(player)}</span>
                           <span className="flex-1 font-medium truncate">{player.name}</span>
-                          <span className="text-xs px-2 py-1 rounded-full font-medium {getPlayerTypeColor(player.type)}">
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${getPlayerTypeColor(player.type)}`}>
                             {player.type[0].toUpperCase()}
                           </span>
                         </div>
