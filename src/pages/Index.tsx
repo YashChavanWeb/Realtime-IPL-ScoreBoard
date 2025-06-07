@@ -1,13 +1,20 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { CricketProvider } from "../context/CricketContext";
+import PublicScoreboard from "../components/PublicScoreboard";
+import AdminDashboard from "../components/AdminDashboard";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <CricketProvider>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+        {/* Public Scoreboard */}
+        <PublicScoreboard />
+        
+        {/* Admin Dashboard */}
+        <AdminDashboard />
       </div>
-    </div>
+    </CricketProvider>
   );
 };
 
