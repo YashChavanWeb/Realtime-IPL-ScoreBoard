@@ -3,6 +3,8 @@ import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 export interface Player {
   id: string;
   name: string;
+  type: 'batsman' | 'bowler' | 'all-rounder';
+  role: 'player' | 'wicket-keeper' | 'captain';
   runs: number;
   balls: number;
   fours: number;
@@ -79,11 +81,23 @@ type CricketAction =
 const initialState: CricketState = {
   match: {
     id: '1',
-    stadium: '',
+    stadium: 'Wankhede Stadium, Mumbai',
     team1: {
       id: 'team1',
-      name: '',
-      players: [],
+      name: 'Mumbai Indians',
+      players: [
+        { id: 'mi1', name: 'Rohit Sharma', type: 'batsman', role: 'captain', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: true, isOnStrike: true },
+        { id: 'mi2', name: 'Ishan Kishan', type: 'batsman', role: 'wicket-keeper', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: true, isOnStrike: false },
+        { id: 'mi3', name: 'Suryakumar Yadav', type: 'batsman', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi4', name: 'Tilak Varma', type: 'batsman', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi5', name: 'Hardik Pandya', type: 'all-rounder', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi6', name: 'Kieron Pollard', type: 'all-rounder', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi7', name: 'Krunal Pandya', type: 'all-rounder', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi8', name: 'Jasprit Bumrah', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi9', name: 'Trent Boult', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi10', name: 'Rahul Chahar', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'mi11', name: 'Nathan Coulter-Nile', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false }
+      ],
       totalRuns: 0,
       wickets: 0,
       overs: 0,
@@ -92,8 +106,20 @@ const initialState: CricketState = {
     },
     team2: {
       id: 'team2',
-      name: '',
-      players: [],
+      name: 'Chennai Super Kings',
+      players: [
+        { id: 'csk1', name: 'MS Dhoni', type: 'batsman', role: 'captain', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk2', name: 'Ruturaj Gaikwad', type: 'batsman', role: 'wicket-keeper', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk3', name: 'Faf du Plessis', type: 'batsman', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk4', name: 'Ambati Rayudu', type: 'batsman', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk5', name: 'Ravindra Jadeja', type: 'all-rounder', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk6', name: 'Moeen Ali', type: 'all-rounder', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk7', name: 'Suresh Raina', type: 'batsman', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk8', name: 'Deepak Chahar', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk9', name: 'Shardul Thakur', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk10', name: 'Imran Tahir', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false },
+        { id: 'csk11', name: 'Josh Hazlewood', type: 'bowler', role: 'player', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: false, isOnStrike: false }
+      ],
       totalRuns: 0,
       wickets: 0,
       overs: 0,
@@ -102,7 +128,7 @@ const initialState: CricketState = {
     },
     battingTeam: 'team1',
     bowlingTeam: 'team2',
-    tossWinner: '',
+    tossWinner: 'Mumbai Indians',
     totalOvers: 20,
     currentBowler: '',
     isMatchActive: false,
@@ -111,7 +137,18 @@ const initialState: CricketState = {
     currentOverBalls: []
   },
   isFreeHit: false,
-  isSetupComplete: false
+  isSetupComplete: true
+};
+
+// Text-to-speech function
+const speakAction = (text: string) => {
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.2;
+    utterance.pitch = 1;
+    utterance.volume = 0.8;
+    speechSynthesis.speak(utterance);
+  }
 };
 
 function cricketReducer(state: CricketState, action: CricketAction): CricketState {
@@ -190,6 +227,17 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
         striker.balls += 1;
         if (action.runs === 4) striker.fours += 1;
         if (action.runs === 6) striker.sixes += 1;
+        
+        // Text-to-speech announcement
+        if (action.runs === 0) {
+          speakAction(`Dot ball by ${striker.name}`);
+        } else if (action.runs === 4) {
+          speakAction(`Four! ${action.runs} runs by ${striker.name}`);
+        } else if (action.runs === 6) {
+          speakAction(`Six! ${action.runs} runs by ${striker.name}`);
+        } else {
+          speakAction(`${action.runs} run${action.runs > 1 ? 's' : ''} by ${striker.name}`);
+        }
       }
       
       battingTeam.totalRuns += action.runs;
@@ -224,6 +272,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
         battingTeam.players.forEach(p => {
           if (p.isBatting) p.isOnStrike = !p.isOnStrike;
         });
+        speakAction(`End of over ${battingTeam.overs}`);
       }
       
       newState.isFreeHit = false;
@@ -242,6 +291,13 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       else if (action.extraType === 'bye') outcome = 'B';
       else if (action.extraType === 'legBye') outcome = 'Lb';
       
+      // Text-to-speech announcement
+      if (action.extraType === 'wide') {
+        speakAction(`Wide ball, ${action.runs} extra run${action.runs > 1 ? 's' : ''}`);
+      } else if (action.extraType === 'noBall') {
+        speakAction(`No ball, ${action.runs} extra run${action.runs > 1 ? 's' : ''}`);
+      }
+      
       // Create ball event
       const ballEvent: BallEvent = {
         over: battingTeam.overs + 1,
@@ -257,6 +313,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       if (action.extraType === 'wide' || action.extraType === 'noBall') {
         if (action.extraType === 'noBall') {
           newState.isFreeHit = true;
+          speakAction('Free hit coming up');
         }
       } else {
         battingTeam.balls += 1;
@@ -267,6 +324,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
           battingTeam.overs += 1;
           battingTeam.balls = 0;
           newState.match.currentOverBalls = [];
+          speakAction(`End of over ${battingTeam.overs}`);
         }
       }
       
@@ -286,11 +344,15 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
         striker.isOnStrike = false;
         battingTeam.wickets += 1;
         
+        // Text-to-speech announcement
+        speakAction(`Wicket! ${striker.name} is out ${action.wicketType}`);
+        
         // Bring in new batsman
         const newBatsman = battingTeam.players.find(p => !p.isOut && !p.isBatting);
         if (newBatsman) {
           newBatsman.isBatting = true;
           newBatsman.isOnStrike = true;
+          speakAction(`${newBatsman.name} comes to the crease`);
         }
       }
       
@@ -314,6 +376,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
         battingTeam.overs += 1;
         battingTeam.balls = 0;
         newState.match.currentOverBalls = [];
+        speakAction(`End of over ${battingTeam.overs}`);
       }
       
       newState.isFreeHit = false;

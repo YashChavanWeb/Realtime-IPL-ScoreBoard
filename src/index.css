@@ -3,93 +3,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system with cricket-focused colors */
+/* Professional white and dark blue cricket theme */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 220 39% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 39% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 39% 11%;
 
-    --primary: 142 76% 36%;
+    --primary: 220 91% 25%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 142 20% 95%;
-    --secondary-foreground: 142 76% 20%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 39% 11%;
 
-    --muted: 142 20% 96%;
-    --muted-foreground: 142 20% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 16% 46%;
 
-    --accent: 142 30% 90%;
-    --accent-foreground: 142 76% 20%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 39% 11%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 142 76% 36%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 91% 25%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --cricket-green: 142 76% 36%;
+    /* Cricket-specific colors */
+    --cricket-blue: 220 91% 25%;
+    --cricket-light-blue: 220 91% 85%;
     --cricket-field: 120 60% 95%;
     --cricket-boundary: 46 87% 50%;
-    --cricket-wicket: 14 100% 57%;
-    --cricket-royal: 220 100% 50%;
+    --cricket-wicket: 0 84% 60%;
+    --cricket-success: 142 76% 36%;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-foreground: 220 39% 11%;
+    --sidebar-primary: 220 91% 25%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 39% 11%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 220 91% 25%;
   }
 
   .dark {
-    --background: 142 20% 5%;
-    --foreground: 142 20% 95%;
+    --background: 220 39% 11%;
+    --foreground: 0 0% 95%;
 
-    --card: 142 20% 8%;
-    --card-foreground: 142 20% 95%;
+    --card: 220 39% 11%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 142 20% 8%;
-    --popover-foreground: 142 20% 95%;
+    --popover: 220 39% 11%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 142 76% 45%;
-    --primary-foreground: 142 20% 5%;
+    --primary: 220 91% 70%;
+    --primary-foreground: 220 39% 11%;
 
-    --secondary: 142 20% 15%;
-    --secondary-foreground: 142 20% 90%;
+    --secondary: 220 39% 20%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 142 20% 15%;
-    --muted-foreground: 142 20% 65%;
+    --muted: 220 39% 20%;
+    --muted-foreground: 220 16% 65%;
 
-    --accent: 142 20% 20%;
-    --accent-foreground: 142 20% 90%;
+    --accent: 220 39% 20%;
+    --accent-foreground: 0 0% 95%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 142 20% 20%;
-    --input: 142 20% 20%;
-    --ring: 142 76% 45%;
+    --border: 220 39% 20%;
+    --input: 220 39% 20%;
+    --ring: 220 91% 70%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 220 39% 11%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 220 91% 70%;
+    --sidebar-primary-foreground: 220 39% 11%;
+    --sidebar-accent: 220 39% 20%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 220 39% 20%;
+    --sidebar-ring: 220 91% 70%;
   }
 }
 
@@ -105,34 +107,65 @@
   
   /* Cricket-specific animations */
   .score-animation {
-    animation: scoreUpdate 0.3s ease-in-out;
+    animation: scoreUpdate 0.4s ease-in-out;
   }
   
   @keyframes scoreUpdate {
     0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    50% { transform: scale(1.05); }
     100% { transform: scale(1); }
   }
   
   .wicket-animation {
-    animation: wicketFall 0.5s ease-in-out;
+    animation: wicketFall 0.6s ease-in-out;
   }
   
   @keyframes wicketFall {
-    0% { transform: translateY(0); opacity: 1; }
-    50% { transform: translateY(-10px); opacity: 0.5; }
-    100% { transform: translateY(0); opacity: 1; }
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    50% { transform: translateY(-15px) rotate(-10deg); opacity: 0.7; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  }
+
+  .ball-highlight {
+    animation: ballPulse 0.3s ease-in-out;
+  }
+  
+  @keyframes ballPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
   }
 }
 
-/* Cricket field gradient */
+/* Professional cricket field gradient */
 .cricket-field-bg {
   background: linear-gradient(135deg, 
-    hsl(var(--cricket-field)) 0%, 
-    hsl(var(--cricket-green)) 100%);
+    hsl(var(--background)) 0%, 
+    hsl(var(--cricket-light-blue)) 100%);
 }
 
-/* Cricket scoreboard styling */
+/* Professional scoreboard styling */
 .scoreboard-glow {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.15);
 }
+
+/* Professional card styling */
+.professional-card {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+/* Ball outcome colors */
+.ball-dot { @apply bg-gray-200 text-gray-700 border-gray-300; }
+.ball-single { @apply bg-blue-100 text-blue-800 border-blue-300; }
+.ball-double { @apply bg-blue-200 text-blue-900 border-blue-400; }
+.ball-triple { @apply bg-blue-300 text-blue-900 border-blue-500; }
+.ball-four { @apply bg-green-100 text-green-800 border-green-400; }
+.ball-six { @apply bg-purple-100 text-purple-800 border-purple-400; }
+.ball-wicket { @apply bg-red-100 text-red-800 border-red-400; }
+.ball-wide { @apply bg-yellow-100 text-yellow-800 border-yellow-400; }
+.ball-noball { @apply bg-orange-100 text-orange-800 border-orange-400; }
+.ball-bye { @apply bg-gray-100 text-gray-700 border-gray-400; }
