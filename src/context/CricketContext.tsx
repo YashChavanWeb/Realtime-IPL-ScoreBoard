@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 export interface Player {
@@ -30,6 +29,17 @@ export interface Team {
   };
 }
 
+export interface BallEvent {
+  over: number;
+  ball: number;
+  runs: number;
+  extras?: string;
+  wicket?: boolean;
+  batter: string;
+  bowler: string;
+  outcome: '0' | '1' | '2' | '3' | '4' | '6' | 'W' | 'Wd' | 'Nb' | 'B' | 'Lb';
+}
+
 export interface Match {
   id: string;
   stadium: string;
@@ -41,20 +51,15 @@ export interface Match {
   totalOvers: number;
   currentBowler: string;
   isMatchActive: boolean;
-  ballByBall: Array<{
-    over: number;
-    ball: number;
-    runs: number;
-    extras?: string;
-    wicket?: boolean;
-    batter: string;
-    bowler: string;
-  }>;
+  currentInnings: 1 | 2;
+  ballByBall: BallEvent[];
+  currentOverBalls: BallEvent[];
 }
 
 interface CricketState {
   match: Match;
   isFreeHit: boolean;
+  isSetupComplete: boolean;
 }
 
 type CricketAction = 
@@ -65,38 +70,30 @@ type CricketAction =
   | { type: 'NEW_OVER' }
   | { type: 'UPDATE_BOWLER'; bowler: string }
   | { type: 'SET_FREE_HIT'; value: boolean }
-  | { type: 'UPDATE_PLAYER'; teamId: 'team1' | 'team2'; playerId: string; updates: Partial<Player> };
+  | { type: 'UPDATE_PLAYER'; teamId: 'team1' | 'team2'; playerId: string; updates: Partial<Player> }
+  | { type: 'SETUP_MATCH'; matchData: Partial<Match> }
+  | { type: 'START_INNINGS'; innings: 1 | 2 }
+  | { type: 'END_INNINGS' }
+  | { type: 'UPDATE_TEAMS'; team1: Partial<Team>; team2: Partial<Team> };
 
 const initialState: CricketState = {
   match: {
     id: '1',
-    stadium: 'Lords Cricket Ground',
+    stadium: '',
     team1: {
       id: 'team1',
-      name: 'Team India',
-      players: [
-        { id: '1', name: 'Rohit Sharma', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false, isBatting: true, isOnStrike: true },
-        { id: '2', name: 'Virat Kohli', runs: 9, balls: 3, fours: 1, sixes: 0, isOut: false, isBatting: true, isOnStrike: false },
-        { id: '3', name: 'KL Rahul', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '4', name: 'Hardik Pandya', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '5', name: 'MS Dhoni', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-      ],
-      totalRuns: 9,
+      name: '',
+      players: [],
+      totalRuns: 0,
       wickets: 0,
-      overs: 1,
-      balls: 3,
+      overs: 0,
+      balls: 0,
       extras: { wides: 0, noBalls: 0, byes: 0, legByes: 0 }
     },
     team2: {
       id: 'team2',
-      name: 'England',
-      players: [
-        { id: '6', name: 'Joe Root', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '7', name: 'Ben Stokes', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '8', name: 'Jos Buttler', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '9', name: 'Jofra Archer', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-        { id: '10', name: 'James Anderson', runs: 0, balls: 0, fours: 0, sixes: 0, isOut: false },
-      ],
+      name: '',
+      players: [],
       totalRuns: 0,
       wickets: 0,
       overs: 0,
@@ -105,17 +102,84 @@ const initialState: CricketState = {
     },
     battingTeam: 'team1',
     bowlingTeam: 'team2',
-    tossWinner: 'Team India',
+    tossWinner: '',
     totalOvers: 20,
-    currentBowler: 'Jofra Archer',
-    isMatchActive: true,
-    ballByBall: []
+    currentBowler: '',
+    isMatchActive: false,
+    currentInnings: 1,
+    ballByBall: [],
+    currentOverBalls: []
   },
-  isFreeHit: false
+  isFreeHit: false,
+  isSetupComplete: false
 };
 
 function cricketReducer(state: CricketState, action: CricketAction): CricketState {
   switch (action.type) {
+    case 'SETUP_MATCH': {
+      return {
+        ...state,
+        match: { ...state.match, ...action.matchData },
+        isSetupComplete: true
+      };
+    }
+
+    case 'UPDATE_TEAMS': {
+      return {
+        ...state,
+        match: {
+          ...state.match,
+          team1: { ...state.match.team1, ...action.team1 },
+          team2: { ...state.match.team2, ...action.team2 }
+        }
+      };
+    }
+
+    case 'START_INNINGS': {
+      const newState = { ...state };
+      newState.match.currentInnings = action.innings;
+      newState.match.isMatchActive = true;
+      newState.match.currentOverBalls = [];
+      
+      if (action.innings === 2) {
+        // Switch teams for second innings
+        const temp = newState.match.battingTeam;
+        newState.match.battingTeam = newState.match.bowlingTeam;
+        newState.match.bowlingTeam = temp;
+        
+        // Reset batting team stats
+        const battingTeam = newState.match[newState.match.battingTeam];
+        battingTeam.totalRuns = 0;
+        battingTeam.wickets = 0;
+        battingTeam.overs = 0;
+        battingTeam.balls = 0;
+        battingTeam.extras = { wides: 0, noBalls: 0, byes: 0, legByes: 0 };
+        
+        // Reset player stats
+        battingTeam.players.forEach(player => {
+          player.runs = 0;
+          player.balls = 0;
+          player.fours = 0;
+          player.sixes = 0;
+          player.isOut = false;
+          player.isBatting = false;
+          player.isOnStrike = false;
+        });
+      }
+      
+      return newState;
+    }
+
+    case 'END_INNINGS': {
+      return {
+        ...state,
+        match: {
+          ...state.match,
+          isMatchActive: false
+        }
+      };
+    }
+
     case 'ADD_RUNS': {
       const newState = { ...state };
       const battingTeam = newState.match[newState.match.battingTeam];
@@ -131,6 +195,19 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       battingTeam.totalRuns += action.runs;
       battingTeam.balls += 1;
       
+      // Create ball event
+      const ballEvent: BallEvent = {
+        over: battingTeam.overs + 1,
+        ball: battingTeam.balls,
+        runs: action.runs,
+        batter: striker?.name || '',
+        bowler: newState.match.currentBowler,
+        outcome: action.runs.toString() as BallEvent['outcome']
+      };
+      
+      newState.match.ballByBall.push(ballEvent);
+      newState.match.currentOverBalls.push(ballEvent);
+      
       // Switch strike on odd runs
       if (action.runs % 2 === 1) {
         battingTeam.players.forEach(p => {
@@ -142,6 +219,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       if (battingTeam.balls === 6) {
         battingTeam.overs += 1;
         battingTeam.balls = 0;
+        newState.match.currentOverBalls = [];
         // Switch strike at end of over
         battingTeam.players.forEach(p => {
           if (p.isBatting) p.isOnStrike = !p.isOnStrike;
@@ -159,6 +237,22 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       battingTeam.extras[action.extraType] += 1;
       battingTeam.totalRuns += action.runs;
       
+      let outcome: BallEvent['outcome'] = 'Wd';
+      if (action.extraType === 'noBall') outcome = 'Nb';
+      else if (action.extraType === 'bye') outcome = 'B';
+      else if (action.extraType === 'legBye') outcome = 'Lb';
+      
+      // Create ball event
+      const ballEvent: BallEvent = {
+        over: battingTeam.overs + 1,
+        ball: battingTeam.balls + 1,
+        runs: action.runs,
+        extras: action.extraType,
+        batter: battingTeam.players.find(p => p.isOnStrike)?.name || '',
+        bowler: newState.match.currentBowler,
+        outcome
+      };
+      
       // Wide and No-ball don't count as legal deliveries
       if (action.extraType === 'wide' || action.extraType === 'noBall') {
         if (action.extraType === 'noBall') {
@@ -166,12 +260,17 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
         }
       } else {
         battingTeam.balls += 1;
+        ballEvent.ball = battingTeam.balls;
+        newState.match.currentOverBalls.push(ballEvent);
+        
         if (battingTeam.balls === 6) {
           battingTeam.overs += 1;
           battingTeam.balls = 0;
+          newState.match.currentOverBalls = [];
         }
       }
       
+      newState.match.ballByBall.push(ballEvent);
       return newState;
     }
     
@@ -196,9 +295,25 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       }
       
       battingTeam.balls += 1;
+      
+      // Create ball event
+      const ballEvent: BallEvent = {
+        over: battingTeam.overs + 1,
+        ball: battingTeam.balls,
+        runs: 0,
+        wicket: true,
+        batter: striker?.name || '',
+        bowler: newState.match.currentBowler,
+        outcome: 'W'
+      };
+      
+      newState.match.ballByBall.push(ballEvent);
+      newState.match.currentOverBalls.push(ballEvent);
+      
       if (battingTeam.balls === 6) {
         battingTeam.overs += 1;
         battingTeam.balls = 0;
+        newState.match.currentOverBalls = [];
       }
       
       newState.isFreeHit = false;

@@ -16,31 +16,32 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 120 61% 34%;
+    --primary: 142 76% 36%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 120 20% 95%;
-    --secondary-foreground: 120 61% 20%;
+    --secondary: 142 20% 95%;
+    --secondary-foreground: 142 76% 20%;
 
-    --muted: 120 20% 96%;
-    --muted-foreground: 120 20% 45%;
+    --muted: 142 20% 96%;
+    --muted-foreground: 142 20% 45%;
 
-    --accent: 120 30% 90%;
-    --accent-foreground: 120 61% 20%;
+    --accent: 142 30% 90%;
+    --accent-foreground: 142 76% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 120 61% 34%;
+    --ring: 142 76% 36%;
 
     --radius: 0.5rem;
 
-    --cricket-green: 120 61% 34%;
-    --cricket-field: 120 20% 95%;
+    --cricket-green: 142 76% 36%;
+    --cricket-field: 120 60% 95%;
     --cricket-boundary: 46 87% 50%;
     --cricket-wicket: 14 100% 57%;
+    --cricket-royal: 220 100% 50%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -53,33 +54,33 @@
   }
 
   .dark {
-    --background: 120 20% 5%;
-    --foreground: 120 20% 95%;
+    --background: 142 20% 5%;
+    --foreground: 142 20% 95%;
 
-    --card: 120 20% 8%;
-    --card-foreground: 120 20% 95%;
+    --card: 142 20% 8%;
+    --card-foreground: 142 20% 95%;
 
-    --popover: 120 20% 8%;
-    --popover-foreground: 120 20% 95%;
+    --popover: 142 20% 8%;
+    --popover-foreground: 142 20% 95%;
 
-    --primary: 120 61% 45%;
-    --primary-foreground: 120 20% 5%;
+    --primary: 142 76% 45%;
+    --primary-foreground: 142 20% 5%;
 
-    --secondary: 120 20% 15%;
-    --secondary-foreground: 120 20% 90%;
+    --secondary: 142 20% 15%;
+    --secondary-foreground: 142 20% 90%;
 
-    --muted: 120 20% 15%;
-    --muted-foreground: 120 20% 65%;
+    --muted: 142 20% 15%;
+    --muted-foreground: 142 20% 65%;
 
-    --accent: 120 20% 20%;
-    --accent-foreground: 120 20% 90%;
+    --accent: 142 20% 20%;
+    --accent-foreground: 142 20% 90%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 20% 20%;
-    --input: 120 20% 20%;
-    --ring: 120 61% 45%;
+    --border: 142 20% 20%;
+    --input: 142 20% 20%;
+    --ring: 142 76% 45%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
