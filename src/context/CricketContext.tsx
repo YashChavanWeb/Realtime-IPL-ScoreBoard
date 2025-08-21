@@ -62,6 +62,7 @@ interface CricketState {
   match: Match;
   isFreeHit: boolean;
   isSetupComplete: boolean;
+  ballEvents: BallEvent[];
 }
 
 type CricketAction = 
@@ -137,7 +138,8 @@ const initialState: CricketState = {
     currentOverBalls: []
   },
   isFreeHit: false,
-  isSetupComplete: true
+  isSetupComplete: true,
+  ballEvents: []
 };
 
 // Text-to-speech function
@@ -254,6 +256,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       };
       
       newState.match.ballByBall.push(ballEvent);
+      newState.ballEvents = [...newState.ballEvents, ballEvent];
       newState.match.currentOverBalls.push(ballEvent);
       
       // Switch strike on odd runs
@@ -329,6 +332,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       }
       
       newState.match.ballByBall.push(ballEvent);
+      newState.ballEvents = [...newState.ballEvents, ballEvent];
       return newState;
     }
     
@@ -370,6 +374,7 @@ function cricketReducer(state: CricketState, action: CricketAction): CricketStat
       };
       
       newState.match.ballByBall.push(ballEvent);
+      newState.ballEvents = [...newState.ballEvents, ballEvent];
       newState.match.currentOverBalls.push(ballEvent);
       
       if (battingTeam.balls === 6) {

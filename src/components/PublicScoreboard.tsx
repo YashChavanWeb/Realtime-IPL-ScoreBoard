@@ -52,12 +52,28 @@ const PublicScoreboard = () => {
   return (
     <div className="w-full bg-gradient-to-r from-blue-900 via-blue-800 to-slate-900 text-white shadow-2xl">
       <div className="max-w-7xl mx-auto p-6">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            IPL Live Scoreboard
-          </h1>
-          <div className="text-blue-200 text-lg">
-            {match.stadium} • Innings {match.currentInnings}/2
+        <div className="flex justify-between items-center mb-6">
+          <div className="text-center flex-1">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              IPL Live Scoreboard
+            </h1>
+            <div className="text-blue-200 text-lg">
+              {match.stadium} • Innings {match.currentInnings}/2
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <a 
+              href="/setup" 
+              className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Setup
+            </a>
+            <a 
+              href="/analytics" 
+              className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Analytics
+            </a>
           </div>
         </div>
         
