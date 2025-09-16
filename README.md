@@ -1,4 +1,4 @@
-# 🏏 IPL Real-time Scoreboard Management Application ⚾
+# 🏏 IPL Real-time Scoreboard Management ⚾
 
 As a developer, I’ve always been curious about how sports events like the IPL are managed in **real-time**—especially with all the live scoring and **complex stats updates**. It sparked an idea to build something similar.
 
